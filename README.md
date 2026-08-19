@@ -124,6 +124,25 @@ adversarial-evidence-and-appeal machinery.
 
 ## Deployment
 
-- Deployed StudioNet address: _pending manual deployment_
+- Deployed StudioNet address: `0x76cf0710053CE05262031cbb6eCd6c7a0a2E82B5`
+- Explorer: https://explorer-studio.genlayer.com/address/0x76cf0710053CE05262031cbb6eCd6c7a0a2E82B5
 - Studio import: open [studio.genlayer.com](https://studio.genlayer.com) → "Import
-  contract" → paste the deployed address once available.
+  contract" → paste `0x76cf0710053CE05262031cbb6eCd6c7a0a2E82B5`.
+
+## Measured on live consensus
+
+`test_full_lifecycle_drives_every_write_and_finalizes_without_appeal` passed against
+the address above. A dispute over "Is Python a general-purpose programming language?" —
+plaintiff citing [python.org](https://www.python.org/) for the claim it is, defendant
+citing an unrelated [Photosynthesis](https://en.wikipedia.org/wiki/Photosynthesis) page
+for the claim it isn't — ran the full lifecycle live: `create_dispute` →
+`accept_dispute` → a judged `resolve_dispute` round (5 validators, `MAJORITY_AGREE`,
+one round) correctly read the defendant's evidence as unrelated to their own claim and
+returned `{"verdict": "PLAINTIFF"}`, moving the dispute to `PROVISIONAL` with **no funds
+transferred yet** → an early `finalize_dispute` correctly reverted while the appeal
+window was still open → after the window genuinely elapsed, a permissionless
+`finalize_dispute` paid out both stakes and moved the dispute to `FINAL`. A separate
+`cancel_dispute` test also confirmed a pre-acceptance withdrawal correctly refunds the
+plaintiff and permanently blocks a later `accept_dispute` on the same dispute.
+Every judged round across this contract's testing has completed `SUCCESS`/`ACCEPTED`
+at the GenVM and consensus level — zero fatal errors, zero undetermined rounds.

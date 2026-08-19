@@ -19,7 +19,10 @@ SLOW_WAIT = dict(wait_interval=6000, wait_retries=100)
 STAKE = 1_000
 APPEAL_BOND = 200
 ACCEPT_DEADLINE = 3600
-APPEAL_WINDOW = 60  # contract minimum - keeps the real-time wait short
+APPEAL_WINDOW = 300  # generous margin: a two-fetch judged round plus RPC
+# polling latency can itself eat well past the contract's 60s minimum
+# between resolved_at being stamped and the test regaining control, which
+# made the "too early" assertion flaky at the bare minimum window.
 
 ISSUE_DESCRIPTION = "Is Python a general-purpose programming language?"
 PLAINTIFF_POSITION = "Python is a general-purpose programming language, as its own official site documents."
